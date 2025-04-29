@@ -5,20 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HCG Consulting</title>
   <link rel="stylesheet" href="/assets/css/style.css">
-  <!-- FontAwesome Proper CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-RXf+QSDCUQs6lV2c7k5pz1NlfKJ6QVYyH5P+Xn5k5bBwtF9sQhWyK6YF8UtX9UgDX9Yxu8J+bxT+tulrGw1ZKg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- Canvas Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <style>
-    /* Minimal inline style just for connection area */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Lato', sans-serif;
+      background-color: #f8fef9;
+      color: #1e4636;
+    }
+
+    header {
+      background-color: #28a745;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    header h1 {
+      color: white;
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 0 0;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    nav a {
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
     #connection-path {
       position: relative;
       height: 250px;
       background: #f0f8ff;
       overflow: hidden;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+    }
+
+    #path-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
     }
 
     .icon-track {
@@ -31,25 +71,62 @@
     }
 
     .icon {
-      font-size: 40px;
-      color: #28a745;
+      width: 50px;
+      height: 50px;
+      background-color: #28a745;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.3s, transform 0.3s;
       cursor: pointer;
-      transition: color 0.3s, transform 0.3s;
     }
 
-    .icon.hovered {
-      color: #1e7b34;
+    .icon.connected {
+      background-color: #1e7b34;
       transform: scale(1.2);
     }
 
-    #path-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
+    svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    main {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .hero h2 {
+      color: #28a745;
+    }
+
+    .hero p {
+      max-width: 600px;
+      margin: 1rem auto 2rem;
+    }
+
+    .cta-button {
+      background-color: #28a745;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .cta-button:hover {
+      background-color: #1e7b34;
+    }
+
+    footer {
+      background-color: #28a745;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 3rem;
     }
   </style>
 </head>
@@ -69,32 +146,30 @@
     </nav>
   </header>
 
-  <!-- Connection Section -->
   <section id="connection-path">
     <canvas id="path-canvas"></canvas>
     <div class="icon-track">
-      <div class="icon" data-index="0"><i class="fa-solid fa-users"></i></div>
-      <div class="icon" data-index="1"><i class="fa-solid fa-desktop"></i></div>
-      <div class="icon" data-index="2"><i class="fa-solid fa-database"></i></div>
-      <div class="icon" data-index="3"><i class="fa-solid fa-code"></i></div>
-      <div class="icon" data-index="4"><i class="fa-solid fa-file-alt"></i></div>
-      <div class="icon" data-index="5"><i class="fa-solid fa-users"></i></div>
+      <div class="icon" data-index="0">
+        <svg viewBox="0 0 640 512"><path d="M96 128a64 64 0 1 1 128 0 64 64 0 1 1-128 0zM0 464v-32c0-53 43-96 96-96h64c53 0 96 43 96 96v32H0zM384 128a64 64 0 1 1 128 0 64 64 0 1 1-128 0zM320 368c0-30 10-57 27-79-18-12-39-21-61-23-12 17-31 29-53 32a128 128 0 0 1 87 70zM416 336c0 12-1 24-4 35 19 8 41 13 64 13h64c53 0 96 43 96 96v32H384v-32c0-34-10-65-26-91 35-15 58-49 58-89 0-9-1-18-3-26-9-2-17-4-27-4-18 0-34 5-48 13-10 7-19 15-26 25a128 128 0 0 1 98 93z"/></svg>
+      </div>
+      <div class="icon" data-index="1">
+        <svg viewBox="0 0 640 512"><path d="M64 32C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm0 32h512c17.7 0 32 14.3 32 32v160H32V96c0-17.7 14.3-32 32-32zm0 224h512v96H64v-96z"/></svg>
+      </div>
+      <div class="icon" data-index="2">
+        <svg viewBox="0 0 448 512"><path d="M224 32C100.3 32 0 78.8 0 136v240c0 57.2 100.3 104 224 104s224-46.8 224-104V136c0-57.2-100.3-104-224-104zM48 136c0-13.3 75.2-48 176-48s176 34.7 176 48c0 4-5.7 10-15.9 16.1C347.1 160.7 291.2 176 224 176s-123.1-15.3-160.1-23.9C53.7 146 48 140 48 136zm352 105.2v53.1c-29.7 20-91.5 37.7-176 37.7s-146.3-17.7-176-37.7v-53.1C94.6 258 156.4 272 224 272s129.4-14 176-30.8zm0 96v34.5c-29.7 20-91.5 37.7-176 37.7s-146.3-17.7-176-37.7V337.2c41.4 17.5 103.2 30.8 176 30.8s134.6-13.3 176-30.8z"/></svg>
+      </div>
+      <div class="icon" data-index="3">
+        <svg viewBox="0 0 640 512"><path d="M414.8 32H201.2C144.2 32 96 80.2 96 137.2V374.8c0 57 48.2 105.2 105.2 105.2h213.6c57 0 105.2-48.2 105.2-105.2V137.2C520 80.2 471.8 32 414.8 32zm-61.4 170.7-96 96c-9.4 9.4-24.6 9.4-33.9 0L208 293.3c-9.4-9.4-9.4-24.6 0-33.9l96-96c9.4-9.4 24.6-9.4 33.9 0l15.5 15.5c9.4 9.4 9.4 24.6 0 33.9z"/></svg>
+      </div>
+      <div class="icon" data-index="4">
+        <svg viewBox="0 0 384 512"><path d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.3 0-24-10.7-24-24zm121-31-83-83a24 24 0 0 0-17-7h-6v96h96v-6a24 24 0 0 0-7-17z"/></svg>
+      </div>
+      <div class="icon" data-index="5">
+        <svg viewBox="0 0 640 512"><path d="M96 128a64 64 0 1 1 128 0 64 64 0 1 1-128 0zM0 464v-32c0-53 43-96 96-96h64c53 0 96 43 96 96v32H0zM384 128a64 64 0 1 1 128 0 64 64 0 1 1-128 0zM320 368c0-30 10-57 27-79-18-12-39-21-61-23-12 17-31 29-53 32a128 128 0 0 1 87 70zM416 336c0 12-1 24-4 35 19 8 41 13 64 13h64c53 0 96 43 96 96v32H384v-32c0-34-10-65-26-91 35-15 58-49 58-89 0-9-1-18-3-26-9-2-17-4-27-4-18 0-34 5-48 13-10 7-19 15-26 25a128 128 0 0 1 98 93z"/></svg>
+      </div>
     </div>
   </section>
 
-  <main>
-    <section class="hero">
-      <h2>Helping Practices Get Recognized and Rewarded for Their Quality Care</h2>
-      <p>We know you're already doing excellent work. We help small and medium-sized practices bridge the gap between their work and their partners to ensure you get paid for it.</p>
-      <a href="contact.html" class="cta-button">Work With Us</a>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 HCG Consulting LLC</p>
-  </footer>
-
-  <!-- Main Animation Script -->
   <script>
     window.onload = function() {
       const canvas = document.getElementById('path-canvas');
@@ -108,8 +183,8 @@
         icons.forEach(icon => {
           const rect = icon.getBoundingClientRect();
           iconCenters.push({
-            x: rect.left + rect.width / 2,
-            y: rect.top + rect.height / 2
+            x: rect.left + rect.width/2,
+            y: rect.top + rect.height/2
           });
         });
       }
@@ -134,23 +209,11 @@
           const index = parseInt(icon.getAttribute('data-index'));
           if (!hoveredIndexes.has(index)) {
             hoveredIndexes.add(index);
-            icon.classList.add('hovered');
+            icon.classList.add('connected');
             drawLines();
-            if (hoveredIndexes.size === icons.length) {
-              launchConfetti();
-            }
           }
         });
       });
-
-      function launchConfetti() {
-        confetti({
-          particleCount: 200,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#28a745']
-        });
-      }
 
       window.addEventListener('resize', () => {
         canvas.width = canvas.offsetWidth;
