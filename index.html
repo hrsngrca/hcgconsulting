@@ -5,7 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HCG Consulting</title>
   <link rel="stylesheet" href="/assets/css/style.css">
+  <!-- FontAwesome Proper CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-RXf+QSDCUQs6lV2c7k5pz1NlfKJ6QVYyH5P+Xn5k5bBwtF9sQhWyK6YF8UtX9UgDX9Yxu8J+bxT+tulrGw1ZKg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <style>
+    /* Minimal inline style just for connection area */
+    #connection-path {
+      position: relative;
+      height: 250px;
+      background: #f0f8ff;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-track {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 90%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .icon {
+      font-size: 40px;
+      color: #28a745;
+      cursor: pointer;
+      transition: color 0.3s, transform 0.3s;
+    }
+
+    .icon.hovered {
+      color: #1e7b34;
+      transform: scale(1.2);
+    }
+
+    #path-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+  </style>
 </head>
 
 <body>
@@ -23,17 +69,17 @@
     </nav>
   </header>
 
+  <!-- Connection Section -->
   <section id="connection-path">
     <canvas id="path-canvas"></canvas>
     <div class="icon-track">
-        <div class="icon" data-index="0"><i class="fa-solid fa-users"></i></div>
-        <div class="icon" data-index="1"><i class="fa-solid fa-desktop"></i></div>
-        <div class="icon" data-index="2"><i class="fa-solid fa-database"></i></div>
-        <div class="icon" data-index="3"><i class="fa-solid fa-code"></i></div>
-        <div class="icon" data-index="4"><i class="fa-solid fa-file-alt"></i></div>
-        <div class="icon" data-index="5"><i class="fa-solid fa-users"></i></div>
-      </div>
-      
+      <div class="icon" data-index="0"><i class="fa-solid fa-users"></i></div>
+      <div class="icon" data-index="1"><i class="fa-solid fa-desktop"></i></div>
+      <div class="icon" data-index="2"><i class="fa-solid fa-database"></i></div>
+      <div class="icon" data-index="3"><i class="fa-solid fa-code"></i></div>
+      <div class="icon" data-index="4"><i class="fa-solid fa-file-alt"></i></div>
+      <div class="icon" data-index="5"><i class="fa-solid fa-users"></i></div>
+    </div>
   </section>
 
   <main>
@@ -48,32 +94,26 @@
     <p>&copy; 2025 HCG Consulting LLC</p>
   </footer>
 
-  <!-- Canvas Script -->
-  <script type="module">
-    import confetti from 'https://cdn.skypack.dev/canvas-confetti';
-    
+  <!-- Main Animation Script -->
+  <script>
     window.onload = function() {
       const canvas = document.getElementById('path-canvas');
       const ctx = canvas.getContext('2d');
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    
       const icons = Array.from(document.querySelectorAll('.icon'));
-      let iconCenters = icons.map(icon => {
-        const rect = icon.getBoundingClientRect();
-        return { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
-      });
-    
+      const iconCenters = [];
       let hoveredIndexes = new Set();
-    
+
       function updateIconCenters() {
-        iconCenters = [];
+        iconCenters.length = 0;
         icons.forEach(icon => {
           const rect = icon.getBoundingClientRect();
-          iconCenters.push({ x: rect.left + rect.width/2, y: rect.top + rect.height/2 });
+          iconCenters.push({
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
+          });
         });
       }
-    
+
       function drawLines() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
@@ -88,12 +128,13 @@
         ctx.lineWidth = 3;
         ctx.stroke();
       }
-    
+
       icons.forEach(icon => {
         icon.addEventListener('mouseenter', () => {
           const index = parseInt(icon.getAttribute('data-index'));
           if (!hoveredIndexes.has(index)) {
             hoveredIndexes.add(index);
+            icon.classList.add('hovered');
             drawLines();
             if (hoveredIndexes.size === icons.length) {
               launchConfetti();
@@ -101,14 +142,7 @@
           }
         });
       });
-    
-      window.addEventListener('resize', () => {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-        updateIconCenters();
-        drawLines();
-      });
-    
+
       function launchConfetti() {
         confetti({
           particleCount: 200,
@@ -117,9 +151,19 @@
           colors: ['#28a745']
         });
       }
+
+      window.addEventListener('resize', () => {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        updateIconCenters();
+        drawLines();
+      });
+
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      updateIconCenters();
     };
-    </script>
-    
+  </script>
 
 </body>
 </html>
