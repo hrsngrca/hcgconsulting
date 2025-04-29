@@ -1,0 +1,123 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HCG Consulting</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>HCG Consulting</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="case-studies.html">Case Studies</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  <section id="connection-path">
+    <canvas id="path-canvas"></canvas>
+    <div class="icon-track">
+      <div class="icon" data-index="0"><i class="fas fa-users"></i></div>
+      <div class="icon" data-index="1"><i class="fas fa-desktop"></i></div>
+      <div class="icon" data-index="2"><i class="fas fa-database"></i></div>
+      <div class="icon" data-index="3"><i class="fas fa-code"></i></div>
+      <div class="icon" data-index="4"><i class="fas fa-file-alt"></i></div>
+      <div class="icon" data-index="5"><i class="fas fa-users"></i></div>
+    </div>
+  </section>
+  
+  <!-- FontAwesome for icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  
+  <main>
+    <section class="hero">
+      <h2>Helping Practices Get Recognized and Rewarded for Their Quality Care</h2>
+      <p>We know you're already doing excellent work. We help small and medium-sized practices bridge the gap between their work and their partners to ensure you get paid for it.</p>
+      <a href="contact.html" class="cta-button">Work With Us</a>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 HCG Consulting LLC</p>
+  </footer>
+
+  <script type="module">
+    const canvas = document.getElementById('path-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    
+    const icons = Array.from(document.querySelectorAll('.icon'));
+    const iconCenters = icons.map(icon => {
+      const rect = icon.getBoundingClientRect();
+      return { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
+    });
+    
+    let hoveredIndexes = new Set();
+    
+    function updateIconCenters() {
+      iconCenters.length = 0;
+      icons.forEach(icon => {
+        const rect = icon.getBoundingClientRect();
+        iconCenters.push({ x: rect.left + rect.width/2, y: rect.top + rect.height/2 });
+      });
+    }
+    
+    function drawLines() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      hoveredIndexes.forEach((idx, i, arr) => {
+        if (i === 0) {
+          ctx.moveTo(iconCenters[idx].x, iconCenters[idx].y);
+        } else {
+          ctx.lineTo(iconCenters[idx].x, iconCenters[idx].y);
+        }
+      });
+      ctx.strokeStyle = '#28a745';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+    
+    icons.forEach(icon => {
+      icon.addEventListener('mouseenter', () => {
+        const index = parseInt(icon.getAttribute('data-index'));
+        if (!hoveredIndexes.has(index)) {
+          hoveredIndexes.add(index);
+          drawLines();
+          if (hoveredIndexes.size === icons.length) {
+            launchConfetti();
+          }
+        }
+      });
+    });
+    
+    window.addEventListener('resize', () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      updateIconCenters();
+      drawLines();
+    });
+    
+    // Confetti
+    import confetti from 'https://cdn.skypack.dev/canvas-confetti';
+    
+    function launchConfetti() {
+      confetti({
+        particleCount: 200,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#28a745']
+      });
+    }
+    </script>
+    
+</body>
+</html>
+
+<!-- about.html, services.html, case-studies.html, contact.html, doccare.html, nu-mutual-aid.html -->
+<!-- Each of these will follow the same structure with tailored content -->
